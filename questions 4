@@ -1,0 +1,47 @@
+import urllib.request
+import json
+
+# Function to get COVID-19 statistics from disease.sh API
+def get_covid_data(location):
+    # Set the API endpoint and parameters
+    url = f"https://disease.sh/v3/covid-19/countries/{location}"
+    
+    # Send a GET request to the API
+    with urllib.request.urlopen(url) as response:
+        # Load the JSON response
+        data = json.load(response)
+        
+        # Extract the relevant COVID-19 data
+        cases = data["cases"]
+        recoveries = data["recovered"]
+        deaths = data["deaths"]
+        
+        # Return the COVID-19 data as a dictionary
+        return {"cases": cases, "recoveries": recoveries, "deaths": deaths}
+
+# Function to display the COVID-19 statistics
+def display_covid_data(covid_data):
+    # Print the COVID-19 data in a readable format
+    print("Current COVID-19 Statistics:")
+    print(f"Cases: {covid_data['cases']}")
+    print(f"Recoveries: {covid_data['recoveries']}")
+    print(f"Deaths: {covid_data['deaths']}")
+
+# Main function to run the program
+def main():
+    # Get the location from the user
+    location = input("Enter the country, state, or city: ")
+    
+    # Get the COVID-19 data
+    try:
+        covid_data = get_covid_data(location)
+    except urllib.error.HTTPError:
+        print("Failed to retrieve COVID-19 data. Please check the location and try again.")
+        return
+    
+    # Display the COVID-19 data
+    display_covid_data(covid_data)
+
+# Run the main function
+if __name__ == "__main__":
+    main()
